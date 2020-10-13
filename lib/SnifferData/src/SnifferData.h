@@ -12,9 +12,14 @@ private:
   std::vector<std::string> ssid;
   std::vector<std::string> rssi;
   std::vector<std::string> ch;
+  String WIFI_SSID;
+  String WIFI_PASSWORD;
 public:
+  SnifferData(String WifiSSID,String WifiPassword);
   SnifferData();
   void Sniff();
+  void StopSniff();
+  void ConnectToWifi();
 };
 
 #endif

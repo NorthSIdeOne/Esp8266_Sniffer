@@ -224,15 +224,17 @@ void connectWifi(){
 }
 
 
+SnifferData sniffObj = SnifferData(WIFI_SSID,WIFI_PASSWORD);
 void loop() {
 
   std::vector<std::string> v;
-  sniff();
-  stopSniff();
-  connectWifi();
+  //sniff();
+  sniffObj.Sniff();
+  //stopSniff();
+  sniffObj.StopSniff();
+  //connectWifi();
+  sniffObj.ConnectToWifi();
   sendData(v);
-
-
 
   macs.clear();
   v.clear();
