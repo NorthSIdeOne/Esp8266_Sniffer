@@ -151,6 +151,13 @@ HTTPClient http;
 
 
 void sendData(std::vector<std::string> v){
+
+  for(auto mac : macs){
+    //mac = mac+"\n";
+
+    v.push_back(mac.c_str());
+  }
+  Serial.println(macs.size());
   for(int i=0;i<v.size();i++){
     Serial.println("Send packet");
     std::string macT = v.at(i);
@@ -173,17 +180,23 @@ void setup() {
   Serial.begin(115200);
   wifi_set_promiscuous_rx_cb(sniffer_callback);
 }
-
-void loop() {
-
-  Serial.print("start sniffing channel :");Serial.println(channel);
+void sniff(){
+  Serial.print("start sniffing channel :");
+  int channel=1;
+  while(channel < 14){
+  Serial.println(channel);
   wifi_set_opmode(STATION_MODE);delay(10);
   wifi_set_channel(channel);delay(10);
   wifi_promiscuous_enable(0);delay(10);
-//  wifi_set_promiscuous_rx_cb(sniffer_callback);delay(10);
+//wifi_set_promiscuous_rx_cb(sniffer_callback);delay(10);
   wifi_promiscuous_enable(1);delay(10);
-  delay(5000);
+  channel++;
+  delay(2000);
+  }
+  //  Serial.print("Stop sniffing sniffing");
+}
 
+void stopSniff(){
   Serial.println("stop sniffing");
   wifi_promiscuous_enable(0);
   //wifi_set_promiscuous_rx_cb(0);
@@ -191,6 +204,9 @@ void loop() {
   wifi_promiscuous_enable(0);
 
   delay(500);
+}
+
+void connectWifi(){
   Serial.println("Set AP");
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -205,32 +221,18 @@ void loop() {
   Serial.println(WIFI_SSID);
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+}
+
+
+void loop() {
 
   std::vector<std::string> v;
-  std::vector<std::set<String>> data;
-  std::set<String> test;
-  data.push_back(macs);
-  macs = data.at(0);
-
-  char MACS [macs.size()][30];
-
-  int i=0;
-  for(auto mac : macs){
-    //mac = mac+"\n";
-    strcpy(MACS[i], mac.c_str());
-      Serial.println(MACS[i]);
-    i++;
-    v.push_back(mac.c_str());
-  }
-  Serial.println(macs.size());
-
+  sniff();
+  stopSniff();
+  connectWifi();
   sendData(v);
 
-//  delay(3000);
-  channel++;
-  if(channel == 14){
-    channel = 1;
-  }
+
 
   macs.clear();
   v.clear();
