@@ -1,5 +1,5 @@
 #include <Arduino.h>
-
+#include "SnifferData.h"
 #ifdef ESP8266
 extern "C" {
 #include "user_interface.h" //to gain access to promiscuous mode
