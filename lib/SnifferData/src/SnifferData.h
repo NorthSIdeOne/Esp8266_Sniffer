@@ -8,10 +8,10 @@ class SnifferData{
 
 private:
 
-  std::vector<std::string> macAddr;
-  std::vector<std::string> ssid;
-  std::vector<std::string> rssi;
-  std::vector<std::string> ch;
+  std::vector<String> macAddr;
+  std::vector<String> ssid;
+  std::vector<String> rssi;
+  std::vector<String> ch;
   String WIFI_SSID;
   String WIFI_PASSWORD;
 public:

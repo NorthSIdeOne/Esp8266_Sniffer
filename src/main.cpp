@@ -94,11 +94,13 @@ static void getMAC(char *addr, uint8_t* data, uint16_t offset) {
   sprintf(addr, "%02x:%02x:%02x:%02x:%02x:%02x", data[offset+0], data[offset+1], data[offset+2], data[offset+3], data[offset+4], data[offset+5]);
 }
 
-static void printDataSpan(uint16_t start, uint16_t size, uint8_t* data) {
+static String printDataSpan(uint16_t start, uint16_t size, uint8_t* data) {
+  String ssid="";
   for(uint16_t i = start; i < DATA_LENGTH && i < start+size; i++) {
     Serial.write(data[i]);
-
+    ssid =ssid+ (char)data[i];
   }
+  return ssid;
 
 }
 static void showMetadata(SnifferPacket *snifferPacket) {
@@ -119,6 +121,7 @@ static void showMetadata(SnifferPacket *snifferPacket) {
   Serial.print("RSSI: ");
   Serial.print(snifferPacket->rx_ctrl.rssi, DEC);
 
+
   Serial.print(" Ch: ");
   Serial.print(wifi_get_channel());
 
@@ -131,7 +134,6 @@ static void showMetadata(SnifferPacket *snifferPacket) {
   uint8_t SSID_length = snifferPacket->data[25];
   Serial.print(" SSID: ");
   printDataSpan(26, SSID_length, snifferPacket->data);
-
   Serial.println();
 }
 
