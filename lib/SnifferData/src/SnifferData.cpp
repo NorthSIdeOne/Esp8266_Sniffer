@@ -87,18 +87,21 @@ void SnifferData::ConnectToWifi(){
 
   Serial.print("RSSI: ");
   Serial.print(snifferPacket->rx_ctrl.rssi, DEC);
+  this->rssi.push_back((String)snifferPacket->rx_ctrl.rssi);
 
   Serial.print(" Ch: ");
   Serial.print(wifi_get_channel());
+  this->ch.push_back((String)wifi_get_channel());
 
   char addr[] = "00:00:00:00:00:00";
   getMAC(addr, snifferPacket->data, 10);
   Serial.print(" Peer MAC: ");
   Serial.print(addr);
+  this->macAddr.push_back(addr);
   //macs.insert(addr);
 
   uint8_t SSID_length = snifferPacket->data[25];
   Serial.print(" SSID: ");
-  printDataSpan(26, SSID_length, snifferPacket->data);
+  this->ssid.push_back(printDataSpan(26, SSID_length, snifferPacket->data));
   Serial.println();
 }

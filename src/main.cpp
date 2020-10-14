@@ -236,7 +236,7 @@ void loop() {
   //connectWifi();
   sniffObj.ConnectToWifi();
   sendData(v);
-
+  
   macs.clear();
   v.clear();
 }
