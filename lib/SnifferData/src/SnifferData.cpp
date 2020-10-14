@@ -10,15 +10,15 @@
 void SnifferData::Sniff(){
   Serial.print("start sniffing channel :");
   int channel=1;
+
   while(channel < 14){
   Serial.println(channel);
   wifi_set_opmode(STATION_MODE);delay(10);
   wifi_set_channel(channel);delay(10);
   wifi_promiscuous_enable(0);delay(10);
-//wifi_set_promiscuous_rx_cb(sniffer_callback);delay(10);
   wifi_promiscuous_enable(1);delay(10);
   channel++;
-  delay(2000);
+  delay(this->channelSniffTime);
   }
 }
 
@@ -112,13 +112,16 @@ void SnifferData::SendData(String URL){
 
   for(int i=0;i<this->macAddr.size();i++)
   {
+
     Serial.println("Send packet");
+    //Create URL
     String mainUrl = URL;
     mainUrl = mainUrl +"?&RSSI=" + this->rssi[i];
-    mainUrl = mainUrl +"&CH="+this->ch[i];
-    mainUrl = mainUrl +"&MAC="+this->macAddr[i];
-    mainUrl = mainUrl +"&SSID="+this->ssid[i];
-    http.begin(mainUrl);  //Specify request destination
+    mainUrl = mainUrl +"&CH="    + this->ch[i];
+    mainUrl = mainUrl +"&MAC="   + this->macAddr[i];
+    mainUrl = mainUrl +"&SSID="  + this->ssid[i];
+    //Make Get request
+    http.begin(mainUrl);
     int code = http.GET();
     Serial.println(code);
 
@@ -132,3 +135,22 @@ void SnifferData::ClearData(){
   this->rssi.clear();
   this->ch.clear();
 }
+
+
+void SnifferData::setChannelSniffTime(int sniffTime){
+  this->channelSniffTime = sniffTime;
+}
+
+  std::vector<String> SnifferData::getMacAddr(){
+    return this->macAddr;
+  }
+  std::vector<String> SnifferData::getRSSI(){
+    return this->rssi;
+  }
+  std::vector<String> SnifferData::getSSID(){
+    return this->ssid;
+  }
+  std::vector<String> SnifferData::getCh(){
+    return this->ch;
+  }
+
