@@ -46,45 +46,45 @@ int port = 8888;
 
 
 
-
+SnifferData sniffObj = SnifferData(WIFI_SSID,WIFI_PASSWORD);
 
 std::set<String> macs;
 
 
 
-struct RxControl {
-  signed rssi: 8;
-  unsigned rate: 4;
-  unsigned is_group: 1;
-  unsigned: 1;
-  unsigned sig_mode: 2;
-  unsigned legacy_length: 12;
-  unsigned damatch0: 1;
-  unsigned damatch1: 1;
-  unsigned bssidmatch0: 1;
-  unsigned bssidmatch1: 1;
-  unsigned MCS: 7;
-  unsigned CWB: 1;
-  unsigned HT_length: 16;
-  unsigned Smoothing: 1;
-  unsigned Not_Sounding: 1;
-  unsigned: 1;
-  unsigned Aggregation: 1;
-  unsigned STBC: 2;
-  unsigned FEC_CODING: 1;
-  unsigned SGI: 1;
-  unsigned rxend_state: 8;
-  unsigned ampdu_cnt: 8;
-  unsigned channel: 4;
-  unsigned: 12;
-};
+// struct RxControl {
+//   signed rssi: 8;
+//   unsigned rate: 4;
+//   unsigned is_group: 1;
+//   unsigned: 1;
+//   unsigned sig_mode: 2;
+//   unsigned legacy_length: 12;
+//   unsigned damatch0: 1;
+//   unsigned damatch1: 1;
+//   unsigned bssidmatch0: 1;
+//   unsigned bssidmatch1: 1;
+//   unsigned MCS: 7;
+//   unsigned CWB: 1;
+//   unsigned HT_length: 16;
+//   unsigned Smoothing: 1;
+//   unsigned Not_Sounding: 1;
+//   unsigned: 1;
+//   unsigned Aggregation: 1;
+//   unsigned STBC: 2;
+//   unsigned FEC_CODING: 1;
+//   unsigned SGI: 1;
+//   unsigned rxend_state: 8;
+//   unsigned ampdu_cnt: 8;
+//   unsigned channel: 4;
+//   unsigned: 12;
+// };
 
-struct SnifferPacket {
-  struct RxControl rx_ctrl;
-  uint8_t data[112];
-  uint16_t cnt;
-  uint16_t len;
-};
+// struct SnifferPacket {
+//   struct RxControl rx_ctrl;
+//   uint8_t data[112];
+//   uint16_t cnt;
+//   uint16_t len;
+// };
 
 
 
@@ -103,39 +103,38 @@ static String printDataSpan(uint16_t start, uint16_t size, uint8_t* data) {
   return ssid;
 
 }
-static void showMetadata(SnifferPacket *snifferPacket) {
+// static void showMetadata(SnifferPacket *snifferPacket) {
 
-  unsigned int frameControl = ((unsigned int)snifferPacket->data[1] << 8) + snifferPacket->data[0];
+//   unsigned int frameControl = ((unsigned int)snifferPacket->data[1] << 8) + snifferPacket->data[0];
 
-  uint8_t version      = (frameControl & 0b0000000000000011) >> 0;
-  uint8_t frameType    = (frameControl & 0b0000000000001100) >> 2;
-  uint8_t frameSubType = (frameControl & 0b0000000011110000) >> 4;
-  uint8_t toDS         = (frameControl & 0b0000000100000000) >> 8;
-  uint8_t fromDS       = (frameControl & 0b0000001000000000) >> 9;
+//   uint8_t version      = (frameControl & 0b0000000000000011) >> 0;
+//   uint8_t frameType    = (frameControl & 0b0000000000001100) >> 2;
+//   uint8_t frameSubType = (frameControl & 0b0000000011110000) >> 4;
+//   uint8_t toDS         = (frameControl & 0b0000000100000000) >> 8;
+//   uint8_t fromDS       = (frameControl & 0b0000001000000000) >> 9;
 
-  // Only look for probe request packets
-  if (frameType != TYPE_MANAGEMENT ||
-      frameSubType != SUBTYPE_PROBE_REQUEST)
-        return;
+//   // Only look for probe request packets
+//   if (frameType != TYPE_MANAGEMENT ||
+//       frameSubType != SUBTYPE_PROBE_REQUEST)
+//         return;
 
-  Serial.print("RSSI: ");
-  Serial.print(snifferPacket->rx_ctrl.rssi, DEC);
+//   Serial.print("RSSI: ");
+//   Serial.print(snifferPacket->rx_ctrl.rssi, DEC);
 
+//   Serial.print(" Ch: ");
+//   Serial.print(wifi_get_channel());
 
-  Serial.print(" Ch: ");
-  Serial.print(wifi_get_channel());
+//   char addr[] = "00:00:00:00:00:00";
+//   getMAC(addr, snifferPacket->data, 10);
+//   Serial.print(" Peer MAC: ");
+//   Serial.print(addr);
+//   macs.insert(addr);
 
-  char addr[] = "00:00:00:00:00:00";
-  getMAC(addr, snifferPacket->data, 10);
-  Serial.print(" Peer MAC: ");
-  Serial.print(addr);
-  macs.insert(addr);
-
-  uint8_t SSID_length = snifferPacket->data[25];
-  Serial.print(" SSID: ");
-  printDataSpan(26, SSID_length, snifferPacket->data);
-  Serial.println();
-}
+//   uint8_t SSID_length = snifferPacket->data[25];
+//   Serial.print(" SSID: ");
+//   printDataSpan(26, SSID_length, snifferPacket->data);
+//   Serial.println();
+// }
 
 
 
@@ -146,8 +145,8 @@ static void showMetadata(SnifferPacket *snifferPacket) {
  * Callback for promiscuous mode
  */
 static void ICACHE_FLASH_ATTR sniffer_callback(uint8_t *buffer, uint16_t length) {
-  struct SnifferPacket *snifferPacket = (struct SnifferPacket*) buffer;
-  showMetadata(snifferPacket);
+  //struct SnifferPacket *snifferPacket = (struct SnifferPacket*) buffer;
+  sniffObj.showMetadata(buffer);
 }
 HTTPClient http;
 
@@ -226,7 +225,7 @@ void connectWifi(){
 }
 
 
-SnifferData sniffObj = SnifferData(WIFI_SSID,WIFI_PASSWORD);
+//SnifferData sniffObj = SnifferData(WIFI_SSID,WIFI_PASSWORD);
 void loop() {
 
   std::vector<std::string> v;
