@@ -80,7 +80,8 @@ public:
   void getMAC(char *addr, uint8_t* data, uint16_t offset);
   String printDataSpan(uint16_t start, uint16_t size, uint8_t* data);
   void showMetadata(uint8_t *buffer);
-  void SendData();
+  void SendData(String URL);
+  void ClearData();
 };
 
 #endif

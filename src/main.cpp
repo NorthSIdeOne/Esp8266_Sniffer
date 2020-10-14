@@ -235,8 +235,9 @@ void loop() {
   sniffObj.StopSniff();
   //connectWifi();
   sniffObj.ConnectToWifi();
-  sendData(v);
-  
+  //sendData(v);
+  sniffObj.SendData("http://10.10.16.215:8080/sniffer/connect.php");
+  sniffObj.ClearData();
   macs.clear();
   v.clear();
 }

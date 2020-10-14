@@ -105,3 +105,30 @@ void SnifferData::ConnectToWifi(){
   this->ssid.push_back(printDataSpan(26, SSID_length, snifferPacket->data));
   Serial.println();
 }
+
+
+void SnifferData::SendData(String URL){
+  HTTPClient http;
+
+  for(int i=0;i<this->macAddr.size();i++)
+  {
+    Serial.println("Send packet");
+    String mainUrl = URL;
+    mainUrl = mainUrl +"?&RSSI=" + this->rssi[i];
+    mainUrl = mainUrl +"&CH="+this->ch[i];
+    mainUrl = mainUrl +"&MAC="+this->macAddr[i];
+    mainUrl = mainUrl +"&SSID="+this->ssid[i];
+    http.begin(mainUrl);  //Specify request destination
+    int code = http.GET();
+    Serial.println(code);
+
+  }
+  
+}
+
+void SnifferData::ClearData(){
+  this->ssid.clear();
+  this->macAddr.clear();
+  this->rssi.clear();
+  this->ch.clear();
+}
